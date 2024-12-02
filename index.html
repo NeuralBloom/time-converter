@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Converter</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="script.js" defer></script>
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-4">
+    <div class="max-w-2xl mx-auto bg-white rounded-lg shadow p-6">
+        <h1 class="text-2xl font-bold mb-6">Time Converter</h1>
+        
+        <!-- Time Converter Section -->
+        <div class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">Format Converter</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1">12-Hour Format (e.g., 2:30 PM)</label>
+                    <input type="text" id="time12" placeholder="Enter time (e.g., 2:30 PM)" 
+                           class="w-full p-2 border rounded">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">24-Hour Format (e.g., 14:30)</label>
+                    <input type="text" id="time24" placeholder="Enter time (e.g., 14:30)" 
+                           class="w-full p-2 border rounded">
+                </div>
+            </div>
+        </div>
+
+        <!-- Time Calculator Section -->
+        <div>
+            <h2 class="text-xl font-semibold mb-4">Time Calculator</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1">Start Time (24h format)</label>
+                    <input type="text" id="startTime" placeholder="Enter start time (e.g., 14:30)" 
+                           class="w-full p-2 border rounded">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">End Time (24h format)</label>
+                    <input type="text" id="endTime" placeholder="Enter end time (e.g., 17:45)" 
+                           class="w-full p-2 border rounded">
+                </div>
+                <button onclick="calculateDuration()" 
+                        class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    Calculate Duration
+                </button>
+                <div id="duration" class="mt-4 p-4 bg-gray-50 rounded hidden">
+                    <p class="font-medium">Duration:</p>
+                    <p id="durationResult" class="text-lg"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
