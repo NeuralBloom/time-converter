@@ -1,205 +1,215 @@
-// Utility functions
-function copyToClipboard(elementId) {
-    const element = document.getElementById(elementId);
-    const text = element.value || element.textContent;
-    navigator.clipboard.writeText(text).then(() => {
-        // Show temporary feedback
-        const originalText = element.value || element.textContent;
-        if (element.tagName === 'INPUT') {
-            element.value = 'Copied!';
-            setTimeout(() => element.value = originalText, 1000);
-        } else {
-            element.textContent = 'Copied!';
-            setTimeout(() => element.textContent = originalText, 1000);
-        }
-    }).catch(err => {
-        console.error('Failed to copy:', err);
+// Enhanced utility functions
+function clearAllFields() {
+    // Clear converter fields
+    ['time12', 'time24', 'timeDecimal'].forEach(id => {
+        document.getElementById(id).value = '';
+    });
+
+    // Clear calculator fields
+    ['startTime12', 'endTime12', 'startTime24', 'endTime24', 'timeAmount', 'breakDuration'].forEach(id => {
+        document.getElementById(id)?.value = '';
+    });
+
+    // Reset selects to defaults
+    ['startPeriod', 'endPeriod', 'timeUnit', 'operation', 'breakUnit'].forEach(id => {
+        const element = document.getElementById(id);
+        if (element) element.selectedIndex = 0;
+    });
+
+    // Hide results
+    ['durationStd', 'operationResult', 'durationDecimal'].forEach(id => {
+        const element = document.getElementById(id);
+        if (element) element.classList.add('hidden');
+    });
+
+    // Clear error messages
+    document.querySelectorAll('[id^="error"]').forEach(element => {
+        element.classList.add('hidden');
     });
 }
 
-function showError(elementId, message) {
-    const errorElement = document.getElementById(elementId);
-    errorElement.textContent = message;
-    errorElement.classList.remove('hidden');
-    setTimeout(() => errorElement.classList.add('hidden'), 3000);
-}
-
-// Validation functions
-function isValidTime24(time) {
-    const pattern = /^([01]?[0-9]|2[0-3]):([0-5][0-9])$/;
-    return pattern.test(time);
-}
-
-function isValidTime12(time) {
-    const pattern = /^(0?[1-9]|1[0-2]):([0-5][0-9]) (AM|PM|am|pm)$/;
-    return pattern.test(time);
-}
-
-function isValidDecimal(time) {
-    const pattern = /^([01]?[0-9]|2[0-3])\.(\d{1,2})$/;
-    if (!pattern.test(time)) return false;
-    const [hours, decimal] = time.split('.');
-    return parseFloat(hours) >= 0 && parseFloat(hours) < 24 && parseFloat(decimal) <= 99;
-}
-
-// Conversion functions
-function standardToDecimal(hours, minutes) {
-    const decimalMinutes = Math.round((minutes / 60) * 100);
-    return `${hours}.${decimalMinutes.toString().padStart(2, '0')}`;
-}
-
-function decimalToStandard(decimalTime) {
-    const [hours, decimal] = decimalTime.split('.');
-    const minutes = Math.round((decimal / 100) * 60);
-    return `${hours.padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-}
-
-function convert12to24(time12h) {
+// Enhanced time conversion functions
+function convert12to24WithPeriod(time12h, period) {
     if (!time12h) return '';
     
-    if (!isValidTime12(time12h)) {
-        showError('error12', 'Invalid format. Use "HH:MM AM/PM" (e.g., 2:30 PM)');
-        return '';
-    }
+    let [hours, minutes] = time12h.split(':').map(Number);
     
-    const [time, period] = time12h.split(' ');
-    let [hours, minutes] = time.split(':').map(Number);
-    
-    if (period.toLowerCase() === 'pm' && hours !== 12) {
+    if (period.toUpperCase() === 'PM' && hours !== 12) {
         hours += 12;
-    } else if (period.toLowerCase() === 'am' && hours === 12) {
+    } else if (period.toUpperCase() === 'AM' && hours === 12) {
         hours = 0;
     }
     
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
 }
 
-function convert24to12(time24h) {
-    if (!time24h) return '';
-    
-    if (!isValidTime24(time24h)) {
-        showError('error24', 'Invalid format. Use "HH:MM" (e.g., 14:30)');
-        return '';
-    }
-    
+// Advanced calculation functions
+function addTime(time24h, amount, unit) {
     let [hours, minutes] = time24h.split(':').map(Number);
-    const period = hours >= 12 ? 'PM' : 'AM';
-    hours = hours % 12 || 12;
-    
-    return `${hours}:${minutes.toString().padStart(2, '0')} ${period}`;
+    let totalMinutes = hours * 60 + minutes;
+
+    switch(unit) {
+        case 'minutes':
+            totalMinutes += parseInt(amount);
+            break;
+        case 'hours':
+            totalMinutes += parseInt(amount) * 60;
+            break;
+        case 'decimal':
+            totalMinutes += parseFloat(amount) * 60;
+            break;
+    }
+
+    // Handle overnight wrapping
+    while (totalMinutes >= 24 * 60) {
+        totalMinutes -= 24 * 60;
+    }
+    while (totalMinutes < 0) {
+        totalMinutes += 24 * 60;
+    }
+
+    const newHours = Math.floor(totalMinutes / 60);
+    const newMinutes = totalMinutes % 60;
+
+    return `${newHours.toString().padStart(2, '0')}:${newMinutes.toString().padStart(2, '0')}`;
 }
 
-// Calculator functions
-function calculateDecimalDuration() {
-    const startTime = document.getElementById('startTimeDecimal').value;
-    const endTime = document.getElementById('endTimeDecimal').value;
-    
-    if (!isValidDecimal(startTime)) {
-        showError('errorStartDecimal', 'Invalid decimal time format (e.g., 14.50)');
-        return;
-    }
-    if (!isValidDecimal(endTime)) {
-        showError('errorEndDecimal', 'Invalid decimal time format (e.g., 17.75)');
+function performTimeOperation() {
+    const amount = document.getElementById('timeAmount').value;
+    const unit = document.getElementById('timeUnit').value;
+    const operation = document.getElementById('operation').value;
+    const startTime24 = document.getElementById('startTime24').value;
+
+    if (!isValidTime24(startTime24)) {
+        showError('errorStart24', 'Please enter a valid start time');
         return;
     }
 
-    const start = parseFloat(startTime);
-    const end = parseFloat(endTime);
-    let duration = end - start;
-    
-    // Handle overnight shifts
-    if (duration < 0) {
-        duration += 24;
+    if (!amount || isNaN(amount)) {
+        showError('errorOperation', 'Please enter a valid amount');
+        return;
     }
-    
-    // Format result to 2 decimal places
-    const formattedDuration = duration.toFixed(2);
-    
-    const durationDiv = document.getElementById('durationDecimal');
-    const durationResult = document.getElementById('durationResultDecimal');
-    durationDiv.classList.remove('hidden');
-    durationResult.textContent = `${formattedDuration} decimal hours`;
+
+    const operationAmount = operation === 'subtract' ? -amount : amount;
+    const result24h = addTime(startTime24, operationAmount, unit);
+    const result12h = convert24to12(result24h);
+    const resultDecimal = standardToDecimal(...result24h.split(':').map(Number));
+
+    const resultDiv = document.getElementById('operationResult');
+    const resultText = document.getElementById('operationResultText');
+    resultDiv.classList.remove('hidden');
+    resultText.innerHTML = `
+        12-hour: ${result12h}<br>
+        24-hour: ${result24h}<br>
+        Decimal: ${resultDecimal}
+    `;
 }
 
-function calculateStandardDuration() {
-    const startTime = document.getElementById('startTimeStd').value;
-    const endTime = document.getElementById('endTimeStd').value;
-    
-    if (!isValidTime24(startTime)) {
-        showError('errorStartStd', 'Invalid 24-hour format (e.g., 14:30)');
+function calculateWithBreak() {
+    const startTime24 = document.getElementById('startTime24').value;
+    const endTime24 = document.getElementById('endTime24').value;
+    const breakDuration = document.getElementById('breakDuration').value;
+    const breakUnit = document.getElementById('breakUnit').value;
+
+    if (!isValidTime24(startTime24) || !isValidTime24(endTime24)) {
+        showError('errorTime', 'Please enter valid start and end times');
         return;
     }
-    if (!isValidTime24(endTime)) {
-        showError('errorEndStd', 'Invalid 24-hour format (e.g., 17:45)');
+
+    if (!breakDuration || isNaN(breakDuration)) {
+        showError('errorBreak', 'Please enter a valid break duration');
         return;
     }
-    
-    const [startHours, startMinutes] = startTime.split(':').map(Number);
-    const [endHours, endMinutes] = endTime.split(':').map(Number);
-    
-    let diffMinutes = (endHours * 60 + endMinutes) - (startHours * 60 + startMinutes);
-    
-    // Handle overnight shifts
-    if (diffMinutes < 0) {
-        diffMinutes += 24 * 60;
+
+    // Convert break duration to minutes
+    let breakMinutes;
+    switch(breakUnit) {
+        case 'minutes':
+            breakMinutes = parseInt(breakDuration);
+            break;
+        case 'hours':
+            breakMinutes = parseInt(breakDuration) * 60;
+            break;
+        case 'decimal':
+            breakMinutes = Math.round(parseFloat(breakDuration) * 60);
+            break;
     }
+
+    // Calculate total duration minus break
+    const [startHours, startMinutes] = startTime24.split(':').map(Number);
+    const [endHours, endMinutes] = endTime24.split(':').map(Number);
     
-    const hours = Math.floor(diffMinutes / 60);
-    const minutes = diffMinutes % 60;
+    let totalMinutes = (endHours * 60 + endMinutes) - (startHours * 60 + startMinutes);
+    if (totalMinutes < 0) totalMinutes += 24 * 60;
     
+    const netMinutes = totalMinutes - breakMinutes;
+    const netHours = Math.floor(netMinutes / 60);
+    const remainingMinutes = netMinutes % 60;
+
     const durationDiv = document.getElementById('durationStd');
     const durationResult = document.getElementById('durationResultStd');
     durationDiv.classList.remove('hidden');
     
-    // Also show decimal format
-    const decimalHours = standardToDecimal(hours, minutes);
-    durationResult.textContent = `${hours}:${minutes.toString().padStart(2, '0')} (${decimalHours} decimal hours)`;
+    durationResult.innerHTML = `
+        Total Time: ${Math.floor(totalMinutes / 60)}:${(totalMinutes % 60).toString().padStart(2, '0')}<br>
+        Break Time: ${Math.floor(breakMinutes / 60)}:${(breakMinutes % 60).toString().padStart(2, '0')}<br>
+        Net Time: ${netHours}:${remainingMinutes.toString().padStart(2, '0')}
+    `;
+
+    // Also show in decimal format
+    const decimalResult = document.getElementById('durationDecimalResultStd');
+    const decimalTotal = (totalMinutes / 60).toFixed(2);
+    const decimalBreak = (breakMinutes / 60).toFixed(2);
+    const decimalNet = (netMinutes / 60).toFixed(2);
+    
+    decimalResult.innerHTML = `
+        Decimal Format:<br>
+        Total: ${decimalTotal}h<br>
+        Break: ${decimalBreak}h<br>
+        Net: ${decimalNet}h
+    `;
 }
 
-// Event listeners
-document.getElementById('time12').addEventListener('input', function(e) {
-    const time24 = convert12to24(e.target.value);
+// Event listeners for 12-hour time fields
+document.getElementById('startTime12')?.addEventListener('input', function(e) {
+    const period = document.getElementById('startPeriod').value;
+    const time24 = convert12to24WithPeriod(e.target.value, period);
     if (time24) {
-        const [hours, minutes] = time24.split(':').map(Number);
-        document.getElementById('time24').value = time24;
-        document.getElementById('timeDecimal').value = standardToDecimal(hours, minutes);
+        document.getElementById('startTime24').value = time24;
     }
 });
 
-document.getElementById('time24').addEventListener('input', function(e) {
-    if (isValidTime24(e.target.value)) {
-        const [hours, minutes] = e.target.value.split(':').map(Number);
-        document.getElementById('time12').value = convert24to12(e.target.value);
-        document.getElementById('timeDecimal').value = standardToDecimal(hours, minutes);
+document.getElementById('endTime12')?.addEventListener('input', function(e) {
+    const period = document.getElementById('endPeriod').value;
+    const time24 = convert12to24WithPeriod(e.target.value, period);
+    if (time24) {
+        document.getElementById('endTime24').value = time24;
     }
 });
 
-document.getElementById('timeDecimal').addEventListener('input', function(e) {
-    if (!isValidDecimal(e.target.value)) {
-        showError('errorDecimal', 'Invalid decimal format (e.g., 14.50)');
-        return;
-    }
-    
-    const standardTime = decimalToStandard(e.target.value);
-    document.getElementById('time24').value = standardTime;
-    document.getElementById('time12').value = convert24to12(standardTime);
-});
-
-// Add input masks for better user experience
-function addInputMask(inputElement, pattern) {
-    inputElement.addEventListener('keypress', function(e) {
-        if (!pattern.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') {
-            e.preventDefault();
+// Period select change handlers
+['startPeriod', 'endPeriod'].forEach(id => {
+    document.getElementById(id)?.addEventListener('change', function(e) {
+        const timeInput = id === 'startPeriod' ? 'startTime12' : 'endTime12';
+        const time12 = document.getElementById(timeInput).value;
+        if (time12) {
+            const time24 = convert12to24WithPeriod(time12, e.target.value);
+            document.getElementById(id === 'startPeriod' ? 'startTime24' : 'endTime24').value = time24;
         }
     });
-}
+});
 
-// Initialize input masks
+// Initialize input masks and event listeners
 document.addEventListener('DOMContentLoaded', function() {
-    addInputMask(document.getElementById('time24'), /[\d:]$/);
-    addInputMask(document.getElementById('timeDecimal'), /[\d.]$/);
-    addInputMask(document.getElementById('startTimeStd'), /[\d:]$/);
-    addInputMask(document.getElementById('endTimeStd'), /[\d:]$/);
-    addInputMask(document.getElementById('startTimeDecimal'), /[\d.]$/);
-    addInputMask(document.getElementById('endTimeDecimal'), /[\d.]$/);
+    // Add input masks for time fields
+    const timeInputs = document.querySelectorAll('input[type="text"]');
+    timeInputs.forEach(input => {
+        if (input.id.includes('12')) {
+            addInputMask(input, /[\d:]$/);
+        } else if (input.id.includes('24')) {
+            addInputMask(input, /[\d:]$/);
+        } else if (input.id.includes('Decimal')) {
+            addInputMask(input, /[\d.]$/);
+        }
+    });
 });
