@@ -3,55 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Time Converter</title>
+    <title>Time Converter & Calculator</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="script.js" defer></script>
-    <link href="styles.css" rel="stylesheet">
 </head>
-<body class="bg-gray-100 p-4">
-    <div class="max-w-2xl mx-auto bg-white rounded-lg shadow p-6">
-        <h1 class="text-2xl font-bold mb-6">Time Converter</h1>
-        
-        <!-- Time Converter Section -->
-        <div class="mb-8">
-            <h2 class="text-xl font-semibold mb-4">Format Converter</h2>
+<body class="bg-gray-100 min-h-screen py-8">
+    <div class="max-w-3xl mx-auto px-4">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">Time Converter & Calculator</h1>
+            <p class="text-gray-600 mt-2">Convert between 12/24 hour formats and calculate time differences</p>
+        </header>
+
+        <!-- Time Converter Card -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4 text-gray-800 flex items-center">
+                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Time Format Converter
+            </h2>
+            
             <div class="space-y-4">
                 <div>
-                    <label class="block text-sm font-medium mb-1">12-Hour Format (e.g., 2:30 PM)</label>
-                    <input type="text" id="time12" placeholder="Enter time (e.g., 2:30 PM)" 
-                           class="w-full p-2 border rounded">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">12-Hour Format</label>
+                    <div class="relative">
+                        <input type="text" id="time12" 
+                               placeholder="e.g., 2:45 PM" 
+                               class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <div id="error12" class="text-red-500 text-sm mt-1 hidden"></div>
+                    </div>
                 </div>
+
                 <div>
-                    <label class="block text-sm font-medium mb-1">24-Hour Format (e.g., 14:30)</label>
-                    <input type="text" id="time24" placeholder="Enter time (e.g., 14:30)" 
-                           class="w-full p-2 border rounded">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">24-Hour Format</label>
+                    <div class="relative">
+                        <input type="text" id="time24" 
+                               placeholder="e.g., 14:45" 
+                               class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <div id="error24" class="text-red-500 text-sm mt-1 hidden"></div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Time Calculator Section -->
-        <div>
-            <h2 class="text-xl font-semibold mb-4">Time Calculator</h2>
+        <!-- Time Calculator Card -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4 text-gray-800 flex items-center">
+                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                </svg>
+                Time Calculator
+            </h2>
+
             <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium mb-1">Start Time (24h format)</label>
-                    <input type="text" id="startTime" placeholder="Enter start time (e.g., 14:30)" 
-                           class="w-full p-2 border rounded">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Start Time (24h)</label>
+                        <input type="text" id="startTime" 
+                               placeholder="e.g., 14:45" 
+                               class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <div id="errorStart" class="text-red-500 text-sm mt-1 hidden"></div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">End Time (24h)</label>
+                        <input type="text" id="endTime" 
+                               placeholder="e.g., 17:30" 
+                               class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <div id="errorEnd" class="text-red-500 text-sm mt-1 hidden"></div>
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">End Time (24h format)</label>
-                    <input type="text" id="endTime" placeholder="Enter end time (e.g., 17:45)" 
-                           class="w-full p-2 border rounded">
-                </div>
+
                 <button onclick="calculateDuration()" 
-                        class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                        class="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
                     Calculate Duration
                 </button>
+
                 <div id="duration" class="mt-4 p-4 bg-gray-50 rounded hidden">
-                    <p class="font-medium">Duration:</p>
-                    <p id="durationResult" class="text-lg"></p>
+                    <p class="font-medium text-gray-700">Duration:</p>
+                    <p id="durationResult" class="text-lg text-gray-900"></p>
                 </div>
             </div>
+        </div>
+
+        <!-- Help Section -->
+        <div class="mt-6 bg-blue-50 rounded-lg p-4">
+            <h3 class="font-medium text-blue-800 mb-2">Tips:</h3>
+            <ul class="list-disc list-inside text-sm text-blue-700 space-y-1">
+                <li>For 12-hour format, use "HH:MM AM/PM" (e.g., 2:45 PM)</li>
+                <li>For 24-hour format, use "HH:MM" (e.g., 14:45)</li>
+                <li>Minutes should be between 00 and 59</li>
+                <li>Hours should be between 1-12 (12-hour) or 00-23 (24-hour)</li>
+            </ul>
         </div>
     </div>
 </body>
