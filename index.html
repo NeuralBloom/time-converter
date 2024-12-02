@@ -3,53 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Time Converter & Calculator</title>
+    <title>Time Format Converter & Calculator</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="script.js" defer></script>
 </head>
 <body class="bg-gray-100 min-h-screen py-8">
-    <div class="max-w-3xl mx-auto px-4">
-        <!-- Header -->
+    <div class="max-w-4xl mx-auto px-4">
         <header class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-gray-800">Time Converter & Calculator</h1>
-            <p class="text-gray-600 mt-2">Convert between 12/24 hour formats and calculate time differences</p>
+            <h1 class="text-3xl font-bold text-gray-800">Time Format Converter & Calculator</h1>
+            <p class="text-gray-600 mt-2">Convert between standard and decimal time formats, calculate time differences</p>
         </header>
 
         <!-- Time Converter Card -->
         <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h2 class="text-xl font-semibold mb-4 text-gray-800 flex items-center">
-                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                Time Format Converter
-            </h2>
-            
-            <div class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Standard Time Section -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">12-Hour Format</label>
-                    <div class="relative">
-                        <input type="text" id="time12" 
-                               placeholder="e.g., 2:45 PM" 
-                               class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                        <div id="error12" class="text-red-500 text-sm mt-1 hidden"></div>
+                    <h2 class="text-xl font-semibold mb-4 text-gray-800 flex items-center">
+                        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Standard Time
+                    </h2>
+                    <div class="space-y-4">
+                        <div class="relative">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">12-Hour Format</label>
+                            <input type="text" id="time12" 
+                                   placeholder="e.g., 2:30 PM" 
+                                   class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <button onclick="copyToClipboard('time12')" 
+                                    class="absolute right-2 top-8 text-gray-400 hover:text-gray-600">
+                                📋
+                            </button>
+                            <div id="error12" class="text-red-500 text-sm mt-1 hidden"></div>
+                        </div>
+
+                        <div class="relative">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">24-Hour Format</label>
+                            <input type="text" id="time24" 
+                                   placeholder="e.g., 14:30" 
+                                   class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <button onclick="copyToClipboard('time24')" 
+                                    class="absolute right-2 top-8 text-gray-400 hover:text-gray-600">
+                                📋
+                            </button>
+                            <div id="error24" class="text-red-500 text-sm mt-1 hidden"></div>
+                        </div>
                     </div>
                 </div>
 
+                <!-- Decimal Time Section -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">24-Hour Format</label>
+                    <h2 class="text-xl font-semibold mb-4 text-gray-800 flex items-center">
+                        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  d="M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                        </svg>
+                        Decimal Time
+                    </h2>
                     <div class="relative">
-                        <input type="text" id="time24" 
-                               placeholder="e.g., 14:45" 
+                        <label class="block text-sm font-medium text-gray-700 mb-1">24-Hour Decimal Format</label>
+                        <input type="text" id="timeDecimal" 
+                               placeholder="e.g., 14.50" 
                                class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                        <div id="error24" class="text-red-500 text-sm mt-1 hidden"></div>
+                        <button onclick="copyToClipboard('timeDecimal')" 
+                                class="absolute right-2 top-8 text-gray-400 hover:text-gray-600">
+                            📋
+                        </button>
+                        <div id="errorDecimal" class="text-red-500 text-sm mt-1 hidden"></div>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Time Calculator Card -->
-        <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
             <h2 class="text-xl font-semibold mb-4 text-gray-800 flex items-center">
                 <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
@@ -58,46 +87,111 @@
                 Time Calculator
             </h2>
 
-            <div class="space-y-4">
+            <div class="space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Start Time (24h)</label>
-                        <input type="text" id="startTime" 
-                               placeholder="e.g., 14:45" 
-                               class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                        <div id="errorStart" class="text-red-500 text-sm mt-1 hidden"></div>
+                    <!-- Standard Time Calculator -->
+                    <div class="space-y-4">
+                        <h3 class="font-medium text-gray-700">Standard Time</h3>
+                        <div>
+                            <label class="block text-sm text-gray-600">Start Time (24h)</label>
+                            <input type="text" id="startTimeStd" 
+                                   placeholder="e.g., 14:30" 
+                                   class="w-full p-2 border rounded">
+                            <div id="errorStartStd" class="text-red-500 text-sm mt-1 hidden"></div>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600">End Time (24h)</label>
+                            <input type="text" id="endTimeStd" 
+                                   placeholder="e.g., 17:45" 
+                                   class="w-full p-2 border rounded">
+                            <div id="errorEndStd" class="text-red-500 text-sm mt-1 hidden"></div>
+                        </div>
+                        <button onclick="calculateStandardDuration()" 
+                                class="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                            Calculate Standard Duration
+                        </button>
+                        <div id="durationStd" class="p-4 bg-gray-50 rounded hidden">
+                            <p class="font-medium">Standard Duration:</p>
+                            <p id="durationResultStd" class="text-lg"></p>
+                            <button onclick="copyToClipboard('durationResultStd')" 
+                                    class="text-sm text-gray-500 hover:text-gray-700">
+                                📋 Copy
+                            </button>
+                        </div>
                     </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">End Time (24h)</label>
-                        <input type="text" id="endTime" 
-                               placeholder="e.g., 17:30" 
-                               class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                        <div id="errorEnd" class="text-red-500 text-sm mt-1 hidden"></div>
+                    <!-- Decimal Time Calculator -->
+                    <div class="space-y-4">
+                        <h3 class="font-medium text-gray-700">Decimal Time</h3>
+                        <div>
+                            <label class="block text-sm text-gray-600">Start Time (decimal)</label>
+                            <input type="text" id="startTimeDecimal" 
+                                   placeholder="e.g., 14.50" 
+                                   class="w-full p-2 border rounded">
+                            <div id="errorStartDecimal" class="text-red-500 text-sm mt-1 hidden"></div>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600">End Time (decimal)</label>
+                            <input type="text" id="endTimeDecimal" 
+                                   placeholder="e.g., 17.75" 
+                                   class="w-full p-2 border rounded">
+                            <div id="errorEndDecimal" class="text-red-500 text-sm mt-1 hidden"></div>
+                        </div>
+                        <button onclick="calculateDecimalDuration()" 
+                                class="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                            Calculate Decimal Duration
+                        </button>
+                        <div id="durationDecimal" class="p-4 bg-gray-50 rounded hidden">
+                            <p class="font-medium">Decimal Duration:</p>
+                            <p id="durationResultDecimal" class="text-lg"></p>
+                            <button onclick="copyToClipboard('durationResultDecimal')" 
+                                    class="text-sm text-gray-500 hover:text-gray-700">
+                                📋 Copy
+                            </button>
+                        </div>
                     </div>
-                </div>
-
-                <button onclick="calculateDuration()" 
-                        class="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
-                    Calculate Duration
-                </button>
-
-                <div id="duration" class="mt-4 p-4 bg-gray-50 rounded hidden">
-                    <p class="font-medium text-gray-700">Duration:</p>
-                    <p id="durationResult" class="text-lg text-gray-900"></p>
                 </div>
             </div>
         </div>
 
-        <!-- Help Section -->
-        <div class="mt-6 bg-blue-50 rounded-lg p-4">
-            <h3 class="font-medium text-blue-800 mb-2">Tips:</h3>
-            <ul class="list-disc list-inside text-sm text-blue-700 space-y-1">
-                <li>For 12-hour format, use "HH:MM AM/PM" (e.g., 2:45 PM)</li>
-                <li>For 24-hour format, use "HH:MM" (e.g., 14:45)</li>
-                <li>Minutes should be between 00 and 59</li>
-                <li>Hours should be between 1-12 (12-hour) or 00-23 (24-hour)</li>
-            </ul>
+        <!-- Examples and Help Section -->
+        <div class="bg-blue-50 rounded-lg p-6">
+            <h3 class="font-medium text-blue-800 mb-3">Quick Reference Guide:</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-blue-700">
+                <div>
+                    <p class="font-semibold mb-2">Standard Time to Decimal Conversion:</p>
+                    <ul class="list-disc list-inside space-y-1 ml-4">
+                        <li>2:15 PM (14:15) → 14.25</li>
+                        <li>2:30 PM (14:30) → 14.50</li>
+                        <li>2:45 PM (14:45) → 14.75</li>
+                        <li>3:20 PM (15:20) → 15.33</li>
+                        <li>3:40 PM (15:40) → 15.67</li>
+                        <li>4:00 PM (16:00) → 16.00</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <p class="font-semibold mb-2">Time Calculation Tips:</p>
+                    <ul class="list-disc list-inside space-y-1 ml-4">
+                        <li>1 hour = 100 decimal minutes</li>
+                        <li>30 minutes = 0.50 decimal hours</li>
+                        <li>15 minutes = 0.25 decimal hours</li>
+                        <li>45 minutes = 0.75 decimal hours</li>
+                        <li>To add times, simply add decimal values</li>
+                        <li>14.50 + 2.25 = 16.75 hours</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-6 p-4 bg-yellow-50 rounded-lg">
+                <p class="text-yellow-800 font-medium">💡 Pro Tips:</p>
+                <ul class="list-disc list-inside space-y-1 ml-4 text-yellow-700">
+                    <li>Click the clipboard icon (📋) to copy any value</li>
+                    <li>For decimal time, use period (.) not colon (:)</li>
+                    <li>Enter times in 24-hour format for most accurate results</li>
+                    <li>Decimal time makes calculations easier (just add the numbers!)</li>
+                </ul>
+            </div>
         </div>
     </div>
 </body>
