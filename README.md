@@ -23,7 +23,7 @@ Overnight time span handling
 
 🚀 Quick Start
 
-Visit the live site: TimeForge
+Visit the live site: Time-Converter
 Choose your input format
 Enter your time
 Get instant conversions
