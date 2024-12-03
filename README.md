@@ -1,7 +1,10 @@
-TimeForge: A Time Conversion Tool
-Show Image
+Time-Converter: A Time Conversion Tool
+
+
 Overview
-TimeForge is a powerful web-based time conversion tool that seamlessly handles conversions between 12-hour, 24-hour, and decimal time formats. Perfect for timesheet calculations, project time tracking, or anyone working across different time formats.
+
+Time-Converter is a powerful web-based time conversion tool that seamlessly handles conversions between 12-hour, 24-hour, and decimal time formats. Perfect for timesheet calculations, project time tracking, or anyone working across different time formats.
+
 ⚡ Key Features
 🔄 Time Format Converter
 
