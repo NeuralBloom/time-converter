@@ -1,7 +1,11 @@
 Time Converter
+
 A professional web application for converting between time formats and calculating time differences.
+
 Description
+
 The Time Converter tool provides seamless conversion between 12-hour, 24-hour, and decimal time formats. It also includes a calculator for determining time duration between two points.
+
 Features
 
 Time Format Conversion
