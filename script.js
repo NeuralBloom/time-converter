@@ -74,12 +74,17 @@ document.getElementById('timeDecimal').addEventListener('input', function(e) {
     }
 });
 
-// Calculator functions
 function calculateDuration() {
     let startTime = document.getElementById('calcStartTime').value;
     let endTime = document.getElementById('calcEndTime').value;
     const startFormat = document.getElementById('calcStartFormat').value;
     const endFormat = document.getElementById('calcEndFormat').value;
+
+    // Validate inputs
+    if (!startTime || !endTime) {
+        alert('Please enter both start and end times');
+        return;
+    }
 
     // Convert inputs to 24-hour format for calculation
     if (startFormat === '12h') {
@@ -124,13 +129,19 @@ function calculateDuration() {
     const resultDiv = document.getElementById('calculationResult');
     resultDiv.classList.remove('hidden');
 
+    // Format the decimal hours
+    const decimalHours = (hours + (minutes / 60)).toFixed(2);
+
     // Show in all formats
-    document.getElementById('result12').textContent = 
-        `12-hour format: ${hours} hours and ${minutes} minutes`;
-    document.getElementById('result24').textContent = 
-        `24-hour format: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-    document.getElementById('resultDecimal').textContent = 
-        `Decimal format: ${standardToDecimal(hours.toString().padStart(2, '0') + ':' + minutes.toString().padStart(2, '0'))} hours`;
+    document.getElementById('result12').innerHTML = 
+        `<strong>Standard format:</strong> ${hours} hours and ${minutes} minutes`;
+    document.getElementById('result24').innerHTML = 
+        `<strong>24-hour format:</strong> ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+    document.getElementById('resultDecimal').innerHTML = 
+        `<strong>Decimal format:</strong> ${decimalHours} hours`;
+
+    // Make sure the result div is visible
+    resultDiv.style.display = 'block';
 }
 
 // Clear all fields
