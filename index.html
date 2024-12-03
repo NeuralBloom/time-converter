@@ -3,99 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Time Calculator & Converter</title>
+    <title>Time Converter & Calculator</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body class="bg-gray-50 p-6">
-    <div class="max-w-4xl mx-auto">
-        <div class="mb-8 text-center">
-            <h1 class="text-2xl font-bold text-gray-800">Time Calculator & Converter</h1>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8 max-w-3xl">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">Time Converter & Calculator</h1>
+            <p class="text-gray-600">Convert between time formats and calculate time differences</p>
+        </header>
+
+        <!-- Time Converter Card -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-6">Time Format Converter</h2>
+            <div class="space-y-6">
+                <div>
+                    <label class="block font-medium text-gray-700 mb-2">12-Hour Format (HH:MM AM/PM)</label>
+                    <input type="text" id="time12" placeholder="e.g., 2:30 PM" 
+                           class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block font-medium text-gray-700 mb-2">24-Hour Format (HH:MM)</label>
+                    <input type="text" id="time24" placeholder="e.g., 14:30" 
+                           class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block font-medium text-gray-700 mb-2">Decimal Format (HH.MM)</label>
+                    <input type="text" id="timeDecimal" placeholder="e.g., 14.50" 
+                           class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+            </div>
         </div>
 
-        <!-- Main converter -->
-        <div class="bg-white rounded-lg shadow p-6 mb-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Time Converter -->
+        <!-- Time Calculator Card -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-6">Time Calculator</h2>
+            <div class="space-y-6">
+                <!-- Start Time -->
                 <div>
-                    <h2 class="text-lg font-semibold mb-4">Time Converter</h2>
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm mb-1">12-Hour Time</label>
-                            <input type="text" id="time12" placeholder="2:30 PM" class="w-full p-2 border rounded">
-                        </div>
-                        <div>
-                            <label class="block text-sm mb-1">24-Hour Time</label>
-                            <input type="text" id="time24" placeholder="14:30" class="w-full p-2 border rounded">
-                        </div>
-                        <div>
-                            <label class="block text-sm mb-1">Decimal Time</label>
-                            <input type="text" id="timeDecimal" placeholder="14.50" class="w-full p-2 border rounded">
-                        </div>
+                    <label class="block font-medium text-gray-700 mb-2">Start Time</label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <input type="text" id="calcStartTime" placeholder="HH:MM (24-hour)" 
+                               class="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <select id="calcStartFormat" 
+                                class="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="24h">24-hour</option>
+                            <option value="12h">12-hour</option>
+                            <option value="decimal">Decimal</option>
+                        </select>
                     </div>
                 </div>
 
-<!-- Time Calculator -->
-<div>
-    <h2 class="text-lg font-semibold mb-4">Time Calculator</h2>
-    <div class="space-y-4">
-        <!-- 12-hour inputs -->
-        <div>
-            <label class="block text-sm mb-1">Start Time (12h)</label>
-            <div class="flex gap-2">
-                <input type="text" id="startTime12" placeholder="2:30" class="flex-1 p-2 border rounded">
-                <select id="startPeriod" class="w-20 p-2 border rounded">
-                    <option value="AM">AM</option>
-                    <option value="PM">PM</option>
-                </select>
-            </div>
-        </div>
-        <div>
-            <label class="block text-sm mb-1">End Time (12h)</label>
-            <div class="flex gap-2">
-                <input type="text" id="endTime12" placeholder="5:45" class="flex-1 p-2 border rounded">
-                <select id="endPeriod" class="w-20 p-2 border rounded">
-                    <option value="AM">AM</option>
-                    <option value="PM">PM</option>
-                </select>
+                <!-- End Time -->
+                <div>
+                    <label class="block font-medium text-gray-700 mb-2">End Time</label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <input type="text" id="calcEndTime" placeholder="HH:MM (24-hour)" 
+                               class="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <select id="calcEndFormat" 
+                                class="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="24h">24-hour</option>
+                            <option value="12h">12-hour</option>
+                            <option value="decimal">Decimal</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Calculate Button -->
+                <button onclick="calculateDuration()" 
+                        class="w-full bg-blue-500 text-white font-semibold py-3 px-6 rounded-lg hover:bg-blue-600 transition-colors">
+                    Calculate Duration
+                </button>
+
+                <!-- Results -->
+                <div id="calculationResult" class="hidden space-y-2 p-4 bg-gray-50 rounded-lg">
+                    <div id="result12" class="text-gray-800"></div>
+                    <div id="result24" class="text-gray-800"></div>
+                    <div id="resultDecimal" class="text-gray-800"></div>
+                </div>
             </div>
         </div>
 
-        <!-- 24-hour inputs -->
-        <div>
-            <label class="block text-sm mb-1">Start Time (24h)</label>
-            <input type="text" id="startTime24" placeholder="14:30" class="w-full p-2 border rounded">
-        </div>
-        <div>
-            <label class="block text-sm mb-1">End Time (24h)</label>
-            <input type="text" id="endTime24" placeholder="17:45" class="w-full p-2 border rounded">
-        </div>
-
-        <!-- Decimal inputs -->
-        <div>
-            <label class="block text-sm mb-1">Start Time (decimal)</label>
-            <input type="text" id="startTimeDecimal" placeholder="14.50" class="w-full p-2 border rounded">
-        </div>
-        <div>
-            <label class="block text-sm mb-1">End Time (decimal)</label>
-            <input type="text" id="endTimeDecimal" placeholder="17.75" class="w-full p-2 border rounded">
-        </div>
-
-        <button onclick="calculateDuration()" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
-            Calculate Duration
-        </button>
-        <div id="duration" class="mt-4 p-4 bg-gray-50 rounded hidden">
-            <p class="font-medium mb-2">Duration:</p>
-            <div id="durationResult" class="space-y-2">
-                <div id="duration12"></div>
-                <div id="duration24"></div>
-                <div id="durationDecimal"></div>
-            </div>
-        </div>
-    </div>
-</div>
         <!-- Clear Button -->
         <div class="text-center">
-            <button onclick="clearAll()" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+            <button onclick="clearAll()" 
+                    class="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-6 rounded-lg transition-colors">
                 Clear All Fields
             </button>
         </div>
